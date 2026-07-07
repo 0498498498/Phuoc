@@ -113,6 +113,22 @@
         ah.innerHTML = '<span style="color:#6b7494">Auto Hunting: </span>' + huntVal;
         card.appendChild(ah);
 
+        const kb = document.createElement("div");
+        kb.className = "card-line c-muted";
+        let kbVal = "";
+        const kbState = (nv.keyboard || "").toLowerCase();
+        if (kbState === "on") {
+          kbVal = '<span style="color:#6b7494;font-weight:bold">ON</span>';
+        } else if (kbState === "pause") {
+          kbVal = '<span style="color:#ff8c00;font-weight:bold">PAUSE</span>';
+        } else if (kbState === "off") {
+          kbVal = '<span style="color:#6b7494;font-weight:bold">OFF</span>';
+        } else {
+          kbVal = '<span style="color:#252a38;font-weight:bold">---</span>';
+        }
+        kb.innerHTML = '<span style="color:#6b7494">Keyboard: </span>' + kbVal;
+        card.appendChild(kb);
+
         const cpuram = document.createElement("div");
         cpuram.className = "card-line";
         const cpuCol = nv.cpu  ? "#dde1f0" : "#252a38";
@@ -141,7 +157,7 @@
         card.appendChild(act);
 
         if (isOff) {
-          [ah, cpuram, act].forEach(el => el.style.display = "none");
+          [ah, kb, cpuram, act].forEach(el => el.style.display = "none");
         }
 
         grid.appendChild(card);
