@@ -126,17 +126,17 @@
         } else {
           kbVal = '<span style="color:#252a38;font-weight:bold">---</span>';
         }
-        kb.innerHTML = '<span style="color:#6b7494">Keyboard: </span>' + kbVal;
+        const ramCol = nv.ram ? "#dde1f0" : "#252a38";
+        kb.innerHTML =
+          '<span style="color:#6b7494">Keyboard: </span>' + kbVal +
+          '<span style="color:#6b7494"> | Ram: </span><span style="color:' + ramCol + '">' + (nv.ram || "---") + '</span>';
         card.appendChild(kb);
 
-        const cpuram = document.createElement("div");
-        cpuram.className = "card-line";
-        const cpuCol = nv.cpu  ? "#dde1f0" : "#252a38";
-        const ramCol = nv.ram  ? "#dde1f0" : "#252a38";
-        cpuram.innerHTML =
-          `<span style="color:#6b7494">CPU: </span><span style="color:${cpuCol}">${nv.cpu || "---"}</span>` +
-          `<span style="color:#6b7494"> | RAM: </span><span style="color:${ramCol}">${nv.ram || "---"}</span>`;
-        card.appendChild(cpuram);
+        const cd = document.createElement("div");
+        cd.className = "card-line c-muted";
+        const cdCol = nv.countdown ? "#00e676" : "#252a38";
+        cd.innerHTML = '<span style="color:#6b7494">Countdown: </span><span style="color:' + cdCol + '">' + (nv.countdown || "--:--:--") + '</span>';
+        card.appendChild(cd);
 
         const act = document.createElement("div");
         act.className = "card-line c-muted";
@@ -157,7 +157,7 @@
         card.appendChild(act);
 
         if (isOff) {
-          [ah, kb, cpuram, act].forEach(el => el.style.display = "none");
+          [ah, kb, cd, act].forEach(el => el.style.display = "none");
         }
 
         grid.appendChild(card);
