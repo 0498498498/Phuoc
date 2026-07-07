@@ -67,15 +67,18 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+  const room = new URLSearchParams(location.search).get("room");
   const grid = document.getElementById("grid");
 
-  {
+  if (!room) {
+    grid.innerHTML = '<div style="grid-column:1/-1;color:#ff4444;font-size:12px;">Thiếu ?room= trên link.</div>';
+  } else {
     const firebaseConfig = { databaseURL: "https://cctv-eb850-default-rtdb.firebaseio.com/" };
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
     const pad = n => String(n).padStart(2, "0");
 
-    onValue(ref(db, `/status`), (snapshot) => {
+    onValue(ref(db, `/status/${room}`), (snapshot) => {
       const data = snapshot.val();
       grid.innerHTML = "";
 
