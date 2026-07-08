@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lineage II | Real Time Dashboard</title>
+<title>Lineage 2 # Real Time Dashboard</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -40,6 +40,7 @@
   }
   .c-name    { color: #00e676; font-size: 12px; font-weight: bold; margin-bottom: 2px; }
   .c-name.off{ color: #252a38; }
+  .c-name.alert{ color: #ff4444; }
   .c-muted   { color: #6b7494; }
   .bottom {
     display: flex;
@@ -91,12 +92,13 @@
         const nv = data[`nv${i}`];
         if (!nv) continue;
 
-        const isOff = !nv.state || nv.state === "off";
+        const isOff   = !nv.state || nv.state === "off";
+        const isAlert = nv.state === "alert";
         const card  = document.createElement("div");
         card.className = "card" + (isOff ? " muted" : "");
 
         const nameDiv = document.createElement("div");
-        nameDiv.className = "card-line c-name" + (isOff ? " off" : "");
+        nameDiv.className = "card-line c-name" + (isOff ? " off" : "") + (isAlert ? " alert" : "");
         nameDiv.textContent = nv.name || `NV${i}`;
         card.appendChild(nameDiv);
 
@@ -113,12 +115,21 @@
         ah.innerHTML = '<span style="color:#6b7494">Auto Hunting: </span>' + huntVal;
         card.appendChild(ah);
 
+        let buffRow = null;
+        if (nv.buff === "Navy" || nv.buff === "Dragon") {
+          buffRow = document.createElement("div");
+          buffRow.className = "card-line c-muted";
+          const buffCol = nv.buff === "Navy" ? "#00b4ff" : "#ffcc00";
+          buffRow.innerHTML = '<span style="color:#6b7494">Buff: </span><span style="color:' + buffCol + ';font-weight:bold">' + nv.buff + '</span>';
+          card.appendChild(buffRow);
+        }
+
         const kb = document.createElement("div");
         kb.className = "card-line c-muted";
         let kbVal = "";
         const kbState = (nv.keyboard || "").toLowerCase();
         if (kbState === "on") {
-          kbVal = '<span style="color:#6b7494;font-weight:bold">ON</span>';
+          kbVal = '<span style="color:#00e676;font-weight:bold">ON</span>';
         } else if (kbState === "pause") {
           kbVal = '<span style="color:#ff8c00;font-weight:bold">PAUSE</span>';
         } else if (kbState === "off") {
@@ -134,9 +145,24 @@
 
         const cd = document.createElement("div");
         cd.className = "card-line c-muted";
-        const cdCol = nv.countdown ? "#00e676" : "#252a38";
-        cd.innerHTML = '<span style="color:#6b7494">Bién Hình: </span><span style="color:' + cdCol + '">' + (nv.countdown || "--:--:--") + '</span>';
-        card.appendChild(cd);
+        const bhPart = nv.countdown
+          ? '<span style="color:#6b7494">Bién Hình: </span><span style="color:#00e676">' + nv.countdown + '</span>'
+          : '';
+        const hpPart = nv.hp_countdown
+          ? '<span style="color:#6b7494">HP: </span><span style="color:#00e676">' + nv.hp_countdown + '</span>'
+          : '';
+        let cdRow = null;
+        if (bhPart && hpPart) {
+          cd.innerHTML = bhPart + '<span style="color:#6b7494"> | </span>' + hpPart;
+          cdRow = cd;
+        } else if (bhPart) {
+          cd.innerHTML = bhPart;
+          cdRow = cd;
+        } else if (hpPart) {
+          cd.innerHTML = hpPart;
+          cdRow = cd;
+        }
+        if (cdRow) card.appendChild(cdRow);
 
         const act = document.createElement("div");
         act.className = "card-line c-muted";
@@ -157,7 +183,7 @@
         card.appendChild(act);
 
         if (isOff) {
-          [ah, kb, cd, act].forEach(el => el.style.display = "none");
+          [ah, buffRow, kb, cdRow, act].forEach(el => { if (el) el.style.display = "none"; });
         }
 
         grid.appendChild(card);
