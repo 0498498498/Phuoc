@@ -112,17 +112,13 @@
         } else {
           huntVal = '<span style="color:#ff4444;font-weight:bold">OFF</span>';
         }
-        ah.innerHTML = '<span style="color:#6b7494">Auto Hunting: </span>' + huntVal;
-        card.appendChild(ah);
-
-        let buffRow = null;
+        let buffPart = "";
         if (nv.buff === "Navy" || nv.buff === "Dragon") {
-          buffRow = document.createElement("div");
-          buffRow.className = "card-line c-muted";
-          const buffCol = nv.buff === "Navy" ? "#00b4ff" : "#ffcc00";
-          buffRow.innerHTML = '<span style="color:#6b7494">Buff: </span><span style="color:' + buffCol + ';font-weight:bold">' + nv.buff + '</span>';
-          card.appendChild(buffRow);
+          buffPart = ' <span style="color:#6b7494">| </span><span style="color:#3d8ef8;font-weight:bold">' + nv.buff + '</span>';
         }
+        ah.innerHTML = '<span style="color:#6b7494">Auto Hunting: </span>' + huntVal + buffPart;
+        card.appendChild(ah);
+        const buffRow = null;
 
         const kb = document.createElement("div");
         kb.className = "card-line c-muted";
